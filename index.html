@@ -75,17 +75,9 @@
           <ul>
             <li>
               Over-fetching
-
-              <ul class="fragment fade-in" data-fragment-index="1">
-                <li>/products?<span class="qname">field</span>=<span class="qvalue">name</span>&<span class="qname">field</span>=<span class="qvalue">description</span>&<span class="qname">field</span>=<span class="qvalue">variants[*].price</span></li>
-              </ul>
             </li>
             <li class="fragment fade-in" data-fragment-index="2">
               Under-fetching
-
-              <ul class="fragment fade-in" data-fragment-index="3">
-                <li>/products?<span class="qname">expand</span>=<span class="qvalue">productType</span>&<span class="qname">expand</span>=<span class="qvalue">variants[*].price.taxRate</span></li>
-              </ul>
             </li>
             <li class="fragment fade-in" data-fragment-index="4">
               API changes and evolution
@@ -100,7 +92,7 @@
         </section>
 
         <section>
-          <h2>API Gateways</h2>
+          <h2>Aggregation Layer</h2>
 
           <img src="assets/img/api-gateway.svg">
         </section>
