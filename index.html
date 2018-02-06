@@ -120,32 +120,24 @@
           <h2>Response Structure</h2>
 
           <pre style="float: left; width: 50%"><code data-trim contenteditable class="javascript">
-query MyProduct {
-  product(id: 123) {
-    name
-    description
-
-    picture {
-      width
-      height
-      url
-    }
+getSeries(slug:"coastal-africa") {
+  id
+  title
+  description
+  image (w:100 h:100) {
+    uri
   }
 }
           </code></pre>
 
           <pre style="float: left; width: 50%" class="fragment fade-in" data-fragment-index="1"><code data-trim contenteditable class="javascript">
-{
-  "data": {
-    "product": {
-      "name": "Delicious Cake",
-      "description": "Just taste it!"
-
-      "picture": {
-        "width": 150,
-        "height": 150,
-        "url": "http://..."
-      }
+"data": {
+  "getSeries": {
+    "id": "1234",
+    "title": "Coastal Africa",
+    "description": "The narrow ...",
+    "image": {
+      "uri": "/ca/..."
     }
   }
 }
@@ -156,28 +148,19 @@ query MyProduct {
           <h2>Every field Is a Function</h2>
 
           <pre style="float: left; width: 50%"><code data-trim contenteditable class="javascript">
-query MyProduct {
-  products {
-    picture(size: 300) {
-      width, height, url
-    }
+getSeries(slug:"coastal-africa") {
+  image (w:100 h:100) {
+    uri
   }
 }
           </code></pre>
 
           <pre style="float: left; width: 50%" class="fragment fade-in" data-fragment-index="1"><code data-trim contenteditable class="javascript">
-{
-  "data": {
-    "products": [
-      {
-        "picture": {
-          "width": 300,
-          "height": 300,
-          "url": "http://..."
-        }
-      },
-      ...
-    ]
+"data": {
+  "getSeries": {
+    "image": {
+      "uri": "/ca/100x100.jpg"
+    }
   }
 }
           </code></pre>
@@ -187,32 +170,25 @@ query MyProduct {
           <h2>Aliases</h2>
 
           <pre style="float: left; width: 50%"><code data-trim contenteditable class="javascript">
-query MyProduct {
-  products {
-    thumb: picture(size: 100) {
-      width
-    }
-    fullSize: picture(size: 500) {
-      width
-    }
+getSeries(slug:"coastal-africa") {
+  thumb:image (w:266 h:150) {
+    uri
+  }
+  full:image (w:1920 h:1080) {
+    uri
   }
 }
           </code></pre>
 
           <pre style="float: left; width: 50%" class="fragment fade-in" data-fragment-index="1"><code data-trim contenteditable class="javascript">
-{
-  "data": {
-    "products": [
-      {
-        "thumb": {
-          "width": 100
-        },
-        "fullSize": {
-          "width": 500
-        }
-      },
-      ...
-    ]
+"data": {
+  "getSeries": {
+    "thumb": {
+      "uri": "/ca/266x150.jpg"
+    },
+    "full": {
+      "uri": "/ca/1920x1080.jpg"
+    }
   }
 }
           </code></pre>
@@ -226,17 +202,12 @@ query MyProduct {
           <h2>Type System</h2>
 
           <pre style="float: left; width: 60%"><code data-trim contenteditable class="javascript">
-type Picture {
+type Image {
   width: Int!
   height: Int!
-  url: String
-}
-          </code></pre>
-
-          <pre style="float: left; width: 40%" class="fragment fade-in" data-fragment-index="3"><code data-trim contenteditable class="javascript">
-type Query {
-  product(id: Int!): Product
-  products: [Product]
+  altText: String
+  credits: String
+  uri: String!
 }
           </code></pre>
 
@@ -247,127 +218,44 @@ interface Identifiable {
           </code></pre>
 
           <pre style="float: left; width: 60%" class="fragment fade-in" data-fragment-index="2"><code data-trim contenteditable class="javascript">
-type Product implements Identifiable {
+type Series implements Identifiable {
   id: String!
   name: String!
   description: String
-  picture(size: Int): Picture
 }
           </code></pre>
+
+<pre style="float: left; width: 50%" class="fragment fade-in" data-fragment-index="3"><code data-trim contenteditable class="javascript">
+type Query {
+  getSeries(id: String!): Series
+  getAllSeries: [Series]
+}
+          </code></pre>
+
         </section>
 
         <section>
-          <h2>Mutations & Subscriptions</h2>
+          <h2>Mutations</h2>
 
           <pre><code data-trim contenteditable class="javascript">
-mutation ChangeStaff {
-  changeName(productId: 123, newName: "Cheesecake") {
-    id, version
-  }
-
-  setDescription(productId: 123, description: "Delicious!") {
-    id, version
-  }
-}
-
-subscription ProductEvents {
-  nameChanged(productId: 123) { name }
-  productDeleted { id }
-}
-          </code></pre>
-        </section>
-
-        <section>
-          <h2>Demo Time</h2>
-          <!-- GrpahiQL, Fragments, Introspection, docs -->
-
-          <pre><code class="graphiql javascript" data-trim contenteditable>
-{
-  hero {
-    id
-    name
-  }
-}
-
-// Response
-{
-  "data": {
-    "hero": {
-      "id": "2001",
-      "name": "R2-D2"
-    }
+mutation {
+  addSeries(title: "Aerial America" description:"...") {
+    id, title
   }
 }
           </code></pre>
         </section>
 
-        <section>
+				<section>
           <h2>Backend Agnostic</h2>
 
           <img src="assets/img/app-layers.svg" style="width: 75%">
         </section>
 
         <section>
-          <h2>Languages</h2>
-
-          <div class="logos">
-            <div class="impl-logo"><a href="https://github.com/graphql/graphql-js/"><img src="assets/img/js-logo.svg"></a></div>
-            <div class="impl-logo"><a href="https://github.com/graphql/graphql-js/"><img src="assets/img/node-logo.svg"></a></div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="1"><a href="http://sangria-graphql.org/"><img src="assets/img/scala-logo.svg"></a></div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="1"><a href="http://sangria-graphql.org/"><img src="assets/img/sangria-logo.svg"></a></div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="2"><a href="https://github.com/graphql-java/graphql-java"><img src="assets/img/java-logo.svg"></a></div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="3"><a href="http://graphene-python.org/"><img src="assets/img/python-logo.svg"></a></div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="3"><a href="http://graphene-python.org/"><img src="assets/img/graphene.png"></a></div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="4"><a href="https://github.com/rmosolgo/graphql-ruby"><img src="assets/img/ruby_logo.svg"></a></div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="5"><a href="https://github.com/graphql-elixir/graphql"><img src="assets/img/elixir-logo.png" ></a></div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="6"><a href="https://github.com/jdnavarro/graphql-haskell"><img src="assets/img/haskell-logo.svg"></a></div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="6"><a href="https://github.com/graphql-go/graphql"><img src="assets/img/gopher.svg"></a></div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="6"><a href="https://github.com/bjornbytes/graphql-lua"><img src="assets/img/lua-logo.svg"></a></div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="6"><a href="https://github.com/webonyx/graphql-php"><img src="assets/img/php_logo.png"></a></div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="6"><a href="https://github.com/graphql/libgraphqlparser"><img src="assets/img/c-logo.svg"></a></div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="6"><a href="https://github.com/graphql-dotnet/graphql-dotnet"><img src="assets/img/csharp-logo.png"></a></div>
-          </div>
-
+          <h2>Demo Time</h2>
         </section>
 
-        <section>
-          <h2>Example: JavaScript</h2>
-
-          <pre><code data-trim contenteditable class="javascript">
-var ProductType = new GraphQLObjectType({
-  name: "Product",
-  description: "Commodity available for purchase",
-  fields: {
-    id: {type: GraphQLString},
-    onStock: {
-      type: GraphQLInt,
-      resolve(product) {
-        return product.onStock + 10;
-      }
-    }
-  }
-});
-          </code></pre>
-        </section>
-
-        <section>
-          <h2>Example: Scala</h2>
-
-          <pre><code data-trim contenteditable class="scala">
-val ProductType = ObjectType(
-  "Product",
-  "Commodity available for purchase",
-  fields[Unit, Product](
-    Field("id", StringType,
-      resolve = _.value.id),
-    Field("onStock", IntType,
-      resolve = _.value.onStock + 10)))
-          </code></pre>
-
-          <pre class="fragment roll-in" data-fragment-index="1"><code data-trim contenteditable class="scala">
-val ProductType = deriveObjectType[Unit, Product]()
-          </code></pre>
-        </section>
 
         <section data-background="#D45CA2" class="first-slide">
           <h1>Thank you!</h1>
