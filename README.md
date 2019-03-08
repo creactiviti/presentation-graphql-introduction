@@ -1,3 +1,3 @@
 # Introduction to GraphQL
 
-http://creactiviti.com/presentation-graphql-introduction/#/
+https://creactiviti.github.io/presentation-graphql-introduction/#/
